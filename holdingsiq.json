@@ -33,6 +33,9 @@
     },
     {
       "name": "Label and Proxy Resources"
+    },
+    {
+      "name": "Subject Resources"
     }
   ],
   "paths": {
@@ -719,6 +722,14 @@
                   }
                 },
                 "bodyoptione": {
+                  "summary": "JSON payload to create a custom package with package free access",
+                  "value": {
+                    "packageName": "New Custom Package",
+                    "contentType": 3,
+                    "packageAccess": true
+                  }
+                },
+                "bodyoptionf": {
                   "summary": "JSON payload to create a custom package with all fields",
                   "value": {
                     "packageName": "New Custom Package",
@@ -739,7 +750,11 @@
                         "altName": "Custom Alt Name 1",
                         "id": null
                       }
-                    ]
+                    ],
+                    "subjects": [
+                      35408
+                    ],
+                    "packageAccess": true
                   }
                 }
               }
@@ -1443,6 +1458,24 @@
                       }
                     ],
                     "customDisplayName": "string"
+                  }
+                },
+                "bodyoptionn": {
+                  "summary": "JSON payload to update a package with a subject association",
+                  "value": {
+                    "isSelected": true,
+                    "subjectAssociations": [
+                      {
+                        "subjectId": 35408
+                      }
+                    ]
+                  }
+                },
+                "bodyoptiono": {
+                  "summary": "JSON payload to update package free access for a custom package",
+                  "value": {
+                    "isSelected": true,
+                    "packageAccess": true
                   }
                 }
               }
@@ -2338,7 +2371,7 @@
           "Title Resources"
         ],
         "summary": "Get List of Titles Regardless of Package",
-        "description": "This operation allows you to search and retrieve a list of titles from EPKB regardless of the package(s) that the titles are a part of.  The response will reflect the context of the EBSCO customer ID included in the request.  \n\n  **Please Note:**  You will need an API key to gain access to the API through our interactive documentation. If you require an API key, please contact EBSCO customer support.  ",
+        "description": "This operation allows you to search and retrieve a list of titles from EPKB regardless of the package(s) that the titles are a part of.  The response will reflect the context of the EBSCO customer ID included in the request.  \n\n  **Please Note:**  You will need an API key to gain access to the API through our interactive documentation. If you require an API key, please contact EBSCO customer support.",
         "parameters": [
           {
             "name": "custid",
@@ -2476,6 +2509,19 @@
             "required": true,
             "schema": {
               "type": "integer"
+            }
+          },
+          {
+            "name": "freeaccess",
+            "in": "query",
+            "description": "Limits the results based on Package Free Access. The filter options are (free, notfree, all), and the default is all.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "free",
+                "notfree"
+              ]
             }
           },
           {
@@ -3780,6 +3826,197 @@
         }
       }
     },
+    "/v2/{custid}/lists/{listid}/titles": {
+      "get": {
+        "tags": [
+          "Title Resources"
+        ],
+        "summary": "Search Titles Within a List",
+        "description": "This operation allows you to perform an advanced search on titles within a list by search term with various filtering options and search strategies.",
+        "operationId": "get-v2-listid-titles",
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "required": true,
+            "description": "The maximum number of results to return in the response. Default is 10",
+            "schema": {
+              "type": "integer",
+              "enum": [
+                5,
+                10,
+                20
+              ]
+            }
+          },
+          {
+            "name": "custid",
+            "in": "path",
+            "description": "EBSCO Customer ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Page Offset",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "orderby",
+            "in": "query",
+            "required": true,
+            "description": "Valid values are relevance or titlename. Default is relevance.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "relevance",
+                "titlename"
+              ]
+            }
+          },
+          {
+            "name": "freeaccess",
+            "in": "query",
+            "description": "Limits the results based on Package Free Access. The filter options are (free, notfree, all), and the default is all.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "free",
+                "notfree"
+              ]
+            }
+          },
+          {
+            "name": "resourcetype",
+            "in": "query",
+            "description": "Type of resource. Valid values are all, journal, newsletter, report, proceedings, website, newspaper, unspecified, book, bookseries, database, thesisdissertation, streamingaudio, streamingvideo, and audiobook. It is also valid to use 0 for all, 1 for journal, 2 for newsletter, 3 for report, 4 for proceedings, 5 for website, 6 for newspaper, 7 for unspecified, 8 for book, 9 for book series, 10 for database, 11 for thesis dissertation, 12 for streaming audio, 13 for streaming video, or 14 for audio book.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "audiobook",
+                "book",
+                "bookseries",
+                "database",
+                "journal",
+                "newsletter",
+                "newspaper",
+                "proceedings",
+                "report",
+                "streamingaudio",
+                "streamingvideo",
+                "thesisdissertation",
+                "unspecified",
+                "website"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search Term - When searching for titles without a titlesearchservice parameter, sort options will be by title name. When the titlesearchservice parameter is not null, the default sort is by relevance.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchfield",
+            "in": "query",
+            "required": true,
+            "description": "Field to titlesearchservice. Valid values are titlename, publisher, isxn, subject, and zdbid. It is also valid to use 0 for title name, 1 for publisher, 2 for isxn, 3 for subject or 4 for zdbid.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "isxn",
+                "publisher",
+                "subject",
+                "titlename",
+                "zdbid"
+              ]
+            }
+          },
+          {
+            "name": "selection",
+            "in": "query",
+            "description": "Limits the results. Valid values are all, selected, notselected and orderedthroughebsco. It is also valid to use 0 for all, 1 for selected, 2 for notselected, or 3 for ordered through EBSCO.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "selected",
+                "notselected",
+                "orderedthroughebsco"
+              ]
+            }
+          },
+          {
+            "name": "listid",
+            "in": "path",
+            "description": "List ID",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjects",
+            "in": "query",
+            "description": "Type of subject to be returned. By default returns tli, bisac. Valid values are: bisac, tli, libraryofcongress, medical. It is also valid to use 0 for bisac, 1 for tli, 2 for libraryofcongress, 3 for medical",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bisac",
+                "libraryofcongress",
+                "medical",
+                "tli"
+              ]
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. You will need an API key to use the interactive documentation.  If you require an API key, please contact EBSCO customer support.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of titles that are part of a specified package.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/titles"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v2/{custid}/lists/{listid}/titles/{kbid}": {
       "parameters": [
         {
@@ -4225,6 +4462,65 @@
             }
           },
           {
+            "name": "subjectschema",
+            "in": "query",
+            "description": "List of subject facet schema's to filter facets on",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectfilter",
+            "in": "query",
+            "description": "Filters package search by given subjects. Accepts subject id or name. If multiple subjects are given, documents containing any of the given subjects will be returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "facetstoinclude",
+            "in": "query",
+            "description": "Select facets to include in response. Allowed value is 'subject'. Use subjectFacetCount to limit the number of subject facets returned. Default is 1000 when facetsToInclude contains subject.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectfacetcount",
+            "in": "query",
+            "description": "Count of subject facets to return in the response. Default is 1000 when facetstoinclude contains subject, otherwise default is 0.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "patron",
+            "in": "query",
+            "description": "If true (patron search - used in PF), searches will treat custom data as an override to managed data. If null or false (admin search - used in HLM), searches will treat custom data as a supplement to managed data. \" +\n        \"This applies to the package name and package description fields.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "freeaccess",
+            "in": "query",
+            "description": "Limits the results based on Package Free Access. The filter options are (free, notfree, all), and the default is all.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "free",
+                "notfree"
+              ]
+            }
+          },
+          {
             "name": "x-api-key",
             "in": "header",
             "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. You will need an API key to use the interactive documentation.  If you require an API key, please contact EBSCO customer support.",
@@ -4405,6 +4701,65 @@
             }
           },
           {
+            "name": "subjectschema",
+            "in": "query",
+            "description": "List of subject facet schema's to filter facets on",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subjectfilter",
+            "in": "query",
+            "description": "Filters package search by given subjects. Accepts subject id or name. If multiple subjects are given, documents containing any of the given subjects will be returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "facetstoinclude",
+            "in": "query",
+            "description": "Select facets to include in response. Allowed value is 'subject'. Use subjectFacetCount to limit the number of subject facets returned. Default is 1000 when facetsToInclude contains subject.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectfacetcount",
+            "in": "query",
+            "description": "Count of subject facets to return in the response. Default is 1000 when facetstoinclude contains subject, otherwise default is 0.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "patron",
+            "in": "query",
+            "description": "If true (patron search - used in PF), searches will treat custom data as an override to managed data. If null or false (admin search - used in HLM), searches will treat custom data as a supplement to managed data. \" +\n        \"This applies to the package name and package description fields.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "freeaccess",
+            "in": "query",
+            "description": "Limits the results based on Package Free Access. The filter options are (free, notfree, all), and the default is all.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "free",
+                "notfree"
+              ]
+            }
+          },
+          {
             "name": "x-api-key",
             "in": "header",
             "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. You will need an API key to use the interactive documentation.  If you require an API key, please contact EBSCO customer support.",
@@ -4421,6 +4776,96 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PackagesResultV2"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/{custid}/subjects/{schemaid}": {
+      "get": {
+        "tags": [
+          "Subject Resources"
+        ],
+        "summary": "Get Available Subjects By Schema Id",
+        "description": "This operation retrieves all available subjects within a specified subject schema. If 0 is used for the schema id parameter, subjects for all subject schemas will be returned. In the response, the properties for each item in the list includes the subject name, parent id, subject id, schema id, schema name, and subject hierarchy.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "name": "custid",
+            "description": "EBSCO Customer ID",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "schemaid",
+            "in": "path",
+            "description": "The schema id used to filter results (0 = all schemas, 1 = General, 3 = Library of Congress, 4 = Medical, 5 = TLI, 6 = BISAC)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. You will need an API key to use the interactive documentation.  If you require an API key, please contact EBSCO customer support.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of available subjects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailableSubjectResponse"
+                },
+                "examples": {
+                  "Get Available Subjects By Schema Id Response": {
+                    "value": 
+                      [
+                        {
+                          "subjectName": "Agriculture (General)",
+                          "subjectId": 28451,
+                          "schemaId": 3,
+                          "schemaName": "Library of Congress",
+                          "subjectHierarchy": "Agriculture (General)"
+                        },
+                        {
+                          "subjectName": "Agricultural chemistry.  Agricultural chemicals",
+                          "parentId": 28451,
+                          "subjectId": 28457,
+                          "schemaId": 3,
+                          "schemaName": "Library of Congress",
+                          "subjectHierarchy": "Agriculture (General) -- Agricultural chemistry.  Agricultural chemicals"
+                        },
+                        {
+                          "subjectName": "Agricultural conservation",
+                          "parentId": 28451,
+                          "subjectId": 28458,
+                          "schemaId": 3,
+                          "schemaName": "Library of Congress",
+                          "subjectHierarchy": "Agriculture (General) -- Agricultural conservation"
+                        }
+                      ]
+                  }
                 }
               }
             }
@@ -4628,21 +5073,31 @@
         "title": "FacetsModel",
         "type": "object",
         "properties": {
+          "parentId": {
+            "type": "integer",
+            "description": "Id of a Subject's Parent",
+            "example": "35407"
+          },
+          "schema": {
+            "type": "string",
+            "description": "Schema of a Subject",
+            "example": "Library of Congress"
+          },
           "id": {
             "type": "integer",
             "format": "int32",
-            "description": "Unique package identifier.",
+            "description": "Id of a Facet",
             "example": 5207
           },
           "name": {
             "type": "string",
-            "description": "Package Name",
+            "description": "Name of a Facet",
             "example": "EBSCO eBooks"
           },
           "count": {
             "type": "integer",
             "format": "int32",
-            "description": "Total count of search results contained in the package.",
+            "description": "Count of results matching the Facet",
             "example": 1
           }
         },
@@ -5230,13 +5685,14 @@
           },
           "subjectAssociations": {
             "type": "array",
-            "x-stoplight": {
-              "id": "fhpwdwn7552zz"
-            },
             "description": "Subjects associated with the package",
             "items": {
               "$ref": "#/components/schemas/PackageSubjectAssociation"
             }
+          },
+          "packageAccess": {
+            "type": "boolean",
+            "description": "Indicates if the package is freely available."
           }
         },
         "required": [
@@ -5671,9 +6127,6 @@
       },
       "subj": {
         "type": "object",
-        "x-stoplight": {
-          "id": "79cf682da0c2b"
-        },
         "properties": {
           "type": {
             "type": "string",
@@ -6403,6 +6856,19 @@
           },
           "customAltNames": {
             "$ref": "#/components/schemas/altName"
+          },
+          "subjects": {
+            "type": "array",
+            "description": "List of subject Ids to associate with the package",
+            "items": {
+              "type": "integer",
+              "example": 35408
+            }
+          },
+          "packageAccess": {
+            "type": "string",
+            "description": "Indicates if the package is freely accessible.",
+            "example": true
           }
         },
         "description": "Custom Package Payload"
@@ -6909,9 +7375,6 @@
       "altName": {
         "type": "object",
         "description": "Alternate names and their corresponding ids for a package, can be managed or custom.",
-        "x-stoplight": {
-          "id": "459c9558e14b8"
-        },
         "properties": {
           "id": {
             "type": "integer",
@@ -7660,6 +8123,18 @@
           "customDisplayName": {
             "type": "string",
             "description": "Set the custom display name for the package"
+          },
+          "subjectAssociations":  {
+            "type": "array",
+            "description": "The list of subjects to associate with the package.",
+            "items": {
+              "$ref": "#/components/schemas/UpdateSubjectAssociation"
+            }
+          },
+          "packageAccess": {
+            "type": "boolean",
+            "description": "Indicates if the package is freely available.",
+            "example": true
           }
         },
         "required": [
@@ -8355,9 +8830,6 @@
       },
       "ResourceId": {
         "title": "ResourceId",
-        "x-stoplight": {
-          "id": "3z6h2448ygr0s"
-        },
         "type": "object",
         "description": "Identifier for a title assigned by GKB database upon entry",
         "properties": {
@@ -8370,9 +8842,6 @@
       },
       "Kbid": {
         "title": "Kbid",
-        "x-stoplight": {
-          "id": "j26yc9is867zi"
-        },
         "type": "object",
         "description": "Identifier for a title assigned by the EPKB database upon entry",
         "properties": {
@@ -8406,9 +8875,6 @@
       },
       "RelationshipRecord": {
         "title": "RelationshipRecord",
-        "x-stoplight": {
-          "id": "wqg5jtsqsn0ly"
-        },
         "type": "object",
         "description": "Represents the fields needed to describe a relationship between two titles",
         "properties": {
@@ -8464,9 +8930,6 @@
       },
       "Pagination": {
         "title": "Pagination",
-        "x-stoplight": {
-          "id": "zv9q91t3cgwkr"
-        },
         "type": "object",
         "description": "Represents the number of results returned in the response",
         "properties": {
@@ -8478,9 +8941,6 @@
       },
       "TitlesResponseV2": {
         "title": "TitlesResponseV2",
-        "x-stoplight": {
-          "id": "btv1yilaqm71j"
-        },
         "type": "object",
         "properties": {
           "titles": {
@@ -8493,9 +8953,6 @@
       },
       "LocationV2": {
         "title": "LocationV2",
-        "x-stoplight": {
-          "id": "9480wnajdonum"
-        },
         "type": "object",
         "properties": {
           "alternateTitleList": {
@@ -8688,9 +9145,6 @@
       },
       "EmbargoPeriod": {
         "title": "EmbargoPeriod",
-        "x-stoplight": {
-          "id": "ho3l0auyzuppf"
-        },
         "type": "object",
         "properties": {
           "embargoUnit": {
@@ -8714,9 +9168,6 @@
       },
       "LocalAlternateTitle": {
         "title": "LocalAlternateTitle",
-        "x-stoplight": {
-          "id": "pxr3vn7ewsrh6"
-        },
         "type": "object",
         "properties": {
           "alternateTitle": {
@@ -8733,9 +9184,6 @@
       },
       "LocalContributor": {
         "title": "LocalContributor",
-        "x-stoplight": {
-          "id": "u4ce4nfpimzjn"
-        },
         "type": "object",
         "properties": {
           "contributor": {
@@ -8752,9 +9200,6 @@
       },
       "CoverageList": {
         "title": "CoverageList",
-        "x-stoplight": {
-          "id": "o2y8y21kgrbqn"
-        },
         "type": "object",
         "properties": {
           "beginCoverage": {
@@ -8771,9 +9216,6 @@
       },
       "LocalIdentifier": {
         "title": "LocalIdentifier",
-        "x-stoplight": {
-          "id": "jfxcqu5kohong"
-        },
         "type": "object",
         "properties": {
           "id": {
@@ -8802,9 +9244,6 @@
       },
       "ProxyDto": {
         "title": "ProxyDto",
-        "x-stoplight": {
-          "id": "mxv2n6uymetd1"
-        },
         "type": "object",
         "properties": {
           "id": {
@@ -8825,9 +9264,6 @@
       },
       "LocalSubject": {
         "title": "LocalSubject",
-        "x-stoplight": {
-          "id": "tryihwhh40018"
-        },
         "type": "object",
         "properties": {
           "subject": {
@@ -8844,9 +9280,6 @@
       },
       "VisibilityDataV1": {
         "title": "VisibilityDataV1",
-        "x-stoplight": {
-          "id": "2dmb4bklaikri"
-        },
         "type": "object",
         "properties": {
           "category": {
@@ -8866,10 +9299,58 @@
           }
         }
       },
+      "PackageFacets": {
+        "title": "PackageFacets",
+        "type": "object",
+        "properties": {
+          "subjects": {
+            "type": "array",
+            "description": "List of subject facets",
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FacetsModel"
+              }
+            }
+          }
+        }
+      },
+      "PackageSubjectResponse": {
+        "title": "PackageSubjectResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of a subject",
+            "example": 35408
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "Id of Subject's Parent",
+            "example": 35407
+          },
+          "schemaId": {
+            "type": "integer",
+            "description": "SchemaId of a Subject",
+            "example": 3
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of a Subject",
+            "example": "Technology"
+          },
+          "isCustom": {
+            "type": "boolean",
+            "description": "Indicates if the subject has been custom selected by the customer",
+            "example": false
+          }
+        }
+      },
       "PackagesResultV2": {
         "required": [
           "packagesList",
-          "totalResults"
+          "totalResults",
+          "facets"
         ],
         "type": "object",
         "properties": {
@@ -8883,6 +9364,9 @@
             "type": "integer",
             "description": "Total number of results found.",
             "example": 5
+          },
+          "facets": {
+            "$ref": "#/components/schemas/PackageFacets"
           }
         },
         "description": "List of packages from EPKB - not limited to a single vendor id - and the total number of results found."
@@ -8904,9 +9388,22 @@
             "description": "Name of the Package.",
             "example": "Health & Wellness Resource Center (w/alt health module)"
           },
+          "customDisplayName": {
+            "type": "string",
+            "description": "Custom name for the Package.",
+            "example": "Health & Wellness"
+          },
           "managedAltNames": {
             "type": "array",
             "description": "List of Alternative names of package",
+            "items": {
+              "type": "string",
+              "example": "Health & Wellness Resource Center Alternative"
+            }
+          },
+          "customAltNames": {
+            "type": "array",
+            "description": "List of Custom Alternative names of package",
             "items": {
               "type": "string",
               "example": "Health & Wellness Resource Center Alternative"
@@ -8952,6 +9449,11 @@
             "example": false,
             "description": "Limiter to include only records associated with an EBSCO order."
           },
+          "freeAccess": {
+            "type": "boolean",
+            "example": false,
+            "description": "Indicates whether the package has free access designation or not."
+          },
           "visibility": {
             "type": "array",
             "description": "Visibility details for pf,ftf and marc",
@@ -8996,6 +9498,13 @@
             "type": "string",
             "description": "URL with proxy applied",
             "example": "http://ezproxy.myinstitute.edu/login?url=http://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=27h"
+          },
+          "subjectAssociations": {
+            "type": "array",
+            "description": "List of subject associations",
+            "items": {
+              "$ref": "#/components/schemas/PackageSubjectResponse"
+            }
           }
         },
         "description": "This object represents data elements that describe a vendor package."
@@ -9007,30 +9516,18 @@
         "properties": {
           "kbid": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "9yq20u6jx7qgp"
-            },
             "description": "KBID"
           },
           "titleName": {
             "type": "string",
-            "x-stoplight": {
-              "id": "hmz89dx0bw50z"
-            },
             "description": "Title Name"
           },
           "publisherName": {
             "type": "string",
-            "x-stoplight": {
-              "id": "oib1n6wdhlzgo"
-            },
             "description": "Publisher Name"
           },
           "identifiersList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "g3x4blvhe2adx"
-            },
             "description": "Identifiers",
             "items": {
               "$ref": "#/components/schemas/LocalIdentifier"
@@ -9038,9 +9535,6 @@
           },
           "subjectsList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "09p16x9ipl3qp"
-            },
             "description": "Subjects",
             "items": {
               "$ref": "#/components/schemas/LocalSubject"
@@ -9048,37 +9542,22 @@
           },
           "isTitleCustom": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "1bmdbzx2nhjv7"
-            },
             "description": "Indicates if title is a custom title."
           },
           "pubType": {
             "type": "string",
-            "x-stoplight": {
-              "id": "01rdmzmggsrnk"
-            },
             "description": "Publication Type"
           },
           "edition": {
             "type": "string",
-            "x-stoplight": {
-              "id": "ypv625pwn7kbm"
-            },
             "description": "Edition"
           },
           "isPeerReviewed": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "8rkqu2i97ww3u"
-            },
             "description": "Indicates if the title is peer reviewed."
           },
           "contributorsList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "5nmuw45wevwpi"
-            },
             "description": "Contributors",
             "items": {
               "$ref": "#/components/schemas/LocalContributor"
@@ -9086,9 +9565,6 @@
           },
           "alternateTitleList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "jd34scn70cznc"
-            },
             "description": "Alternate Titles",
             "items": {
               "$ref": "#/components/schemas/LocalAlternateTitle"
@@ -9096,23 +9572,14 @@
           },
           "listId": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "ua7kn5au36klj"
-            },
             "description": "List ID"
           },
           "packageName": {
             "type": "string",
-            "x-stoplight": {
-              "id": "165epejs4lkbq"
-            },
             "description": "Package Name"
           },
           "packageType": {
             "type": "string",
-            "x-stoplight": {
-              "id": "x4qvzrcxix427"
-            },
             "description": "Package Type. Valid values are Selectable, Complete, Variable and Custom."
           },
           "proxy": {
@@ -9120,57 +9587,33 @@
           },
           "isPackageCustom": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "g6qemg6c6904h"
-            },
             "description": "Indicates if the package is custom."
           },
           "vendorId": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "n9g6gq8mylgaf"
-            },
             "description": "Vendor Id"
           },
           "vendorName": {
             "type": "string",
-            "x-stoplight": {
-              "id": "lcwtp3vpeouxi"
-            },
             "description": "Vendor Name"
           },
           "locationId": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "1en7s9s42rmwa"
-            },
             "description": "Location ID"
           },
           "isSelected": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "9f4yllgxi59b6"
-            },
             "description": "Indicates if the title is selected."
           },
           "isOrderedThroughEbsco": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "xkqd8r65l0gqm"
-            },
             "description": "Indicates if the title is orered through Ebsco."
           },
           "isTokenNeeded": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "m37z5soag5p6x"
-            },
             "description": "Indicates if token is needed."
           },
           "visibility": {
-            "x-stoplight": {
-              "id": "e1bq0asfkt5az"
-            },
             "type": "array",
             "description": "Visibility data for PF, FTF, and MARC.",
             "items": {
@@ -9179,9 +9622,6 @@
           },
           "managedCoverageList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "zh11nebov7qf4"
-            },
             "description": "Managed Coverage List",
             "items": {
               "$ref": "#/components/schemas/coverageDates"
@@ -9189,9 +9629,6 @@
           },
           "customCoverageList": {
             "type": "array",
-            "x-stoplight": {
-              "id": "zh11nebov7qf4"
-            },
             "description": "Custom Coverage List",
             "items": {
               "$ref": "#/components/schemas/coverageDates"
@@ -9205,64 +9642,87 @@
           },
           "url": {
             "type": "string",
-            "x-stoplight": {
-              "id": "kil0ixw75hfwa"
-            },
             "description": "URL"
           }
         }
       },
       "PackageSubjectAssociation": {
         "title": "PackageSubjectAssociation",
-        "x-stoplight": {
-          "id": "zdcqij2m9xbvx"
-        },
         "type": "object",
         "description": "A Subject associated to a Package",
         "properties": {
           "name": {
             "type": "string",
-            "x-stoplight": {
-              "id": "8d2mmjug5u9dh"
-            },
             "description": "The name of the subject."
           },
           "parentId": {
             "type": "string",
-            "x-stoplight": {
-              "id": "zxj8agw14kty2"
-            },
             "description": "The parent id of the subject (will not be displayed if the associated subject is a root subject)."
           },
           "id": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "rhw7ng0ujernu"
-            },
             "description": "Subject ID"
           },
           "schemaId": {
             "type": "integer",
-            "x-stoplight": {
-              "id": "qslmaxuc7ws0a"
-            },
             "description": "Schema ID"
           },
           "isCustom": {
             "type": "boolean",
-            "x-stoplight": {
-              "id": "zv1ou4prs6xik"
-            },
             "description": "Indicates if the package subject association is custom."
           },
           "subjectHierarchy": {
             "type": "string",
-            "x-stoplight": {
-              "id": "63rohloekzgy2"
-            },
             "description": "The subject hierarchy in string format."
           }
         }
+      },
+      "AvailableSubjectResponse": {
+        "title": "AvailableSubjectResponse",
+        "type": "object",
+        "properties": {
+          "subjectId": {
+            "type": "integer",
+            "description": "The id of the subject",
+            "example": 35408
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "The id of the parent subject. If this is a root level package subject association this property will not be in the response.",
+            "example": 35407
+          },
+          "schemaId": {
+            "type": "integer",
+            "description": "The id of the subject schema",
+            "example": 3
+          },
+          "schemaName": {
+            "type": "string",
+            "description": "The name of the subject schema",
+            "example": "Library of Congress"
+          },
+          "subjectName": {
+            "type": "string",
+            "description": "The name of the subject",
+            "example": "Agricultural chemistry.  Agricultural chemicals"
+          },
+          "subjectHierarchy": {
+            "type": "string",
+            "description": "Agriculture (General) -- Agricultural chemistry.  Agricultural chemicals",
+            "example": false
+          }
+        }
+      },
+      "UpdateSubjectAssociation": {
+        "type": "object",
+        "properties": {
+          "subjectId": {
+            "type": "integer",
+            "description": "The ID of the subject being associated.",
+            "example": 35408
+          }
+        },
+        "description": "A Subject to be associated with a Package"
       }
     }
   }
