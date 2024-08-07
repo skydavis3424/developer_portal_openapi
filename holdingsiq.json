@@ -726,7 +726,7 @@
                   "value": {
                     "packageName": "New Custom Package",
                     "contentType": 3,
-                    "packageAccess": true
+                    "packageFreeAccess": true
                   }
                 },
                 "bodyoptionf": {
@@ -754,7 +754,7 @@
                     "subjects": [
                       35408
                     ],
-                    "packageAccess": true
+                    "packageFreeAccess": true
                   }
                 }
               }
@@ -1475,7 +1475,7 @@
                   "summary": "JSON payload to update package free access for a custom package",
                   "value": {
                     "isSelected": true,
-                    "packageAccess": true
+                    "packageFreeAccess": true
                   }
                 }
               }
@@ -5690,7 +5690,7 @@
               "$ref": "#/components/schemas/PackageSubjectAssociation"
             }
           },
-          "packageAccess": {
+          "packageFreeAccess": {
             "type": "boolean",
             "description": "Indicates if the package is freely available."
           }
@@ -6865,7 +6865,7 @@
               "example": 35408
             }
           },
-          "packageAccess": {
+          "packageFreeAccess": {
             "type": "string",
             "description": "Indicates if the package is freely accessible.",
             "example": true
@@ -8131,7 +8131,7 @@
               "$ref": "#/components/schemas/UpdateSubjectAssociation"
             }
           },
-          "packageAccess": {
+          "packageFreeAccess": {
             "type": "boolean",
             "description": "Indicates if the package is freely available.",
             "example": true
