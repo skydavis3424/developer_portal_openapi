@@ -489,6 +489,143 @@
         }
       }
     },
+    "/{custid}/vendors/{vendorid}/kbartConfigurations": {
+      "get": {
+        "tags": [
+          "Vendor Resources"
+        ],
+        "summary": "Get Vendor KBART Configurations",
+        "description": "This operation allows you to retrieve a list of KBART configurations for a specific vendor.  \n\n  **Please Note:**  You will need an API key to gain access to the API through our interactive documentation. If you require an API key, please contact EBSCO customer support.",
+        "parameters": [
+          {
+            "name": "vendorid",
+            "in": "path",
+            "description": "Vendor ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "custid",
+            "in": "path",
+            "description": "EBSCO Customer ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. If you require an API key, please contact EBSCO customer support.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of KBART configurations for a specific vendor ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VendorKbartConfigurationResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{custid}/vendors/{vendorid}/kbartConfigurations/{kbartConfigurationId}": {
+      "put": {
+        "tags": [
+          "Vendor Resources"
+        ],
+        "summary": "Update Vendor KBART Configuration",
+        "description": "This operation allows you to update or create a KBART configuration for a specific vendor. This is an upsert operation - if the configuration exists, it will be updated; if it doesn't exist, it will be created.  \n\n  **Please Note:** You will need an API key to gain access to the API through our interactive documentation. If you require an API key, please contact EBSCO customer support.",
+        "parameters": [
+          {
+            "name": "custid",
+            "in": "path",
+            "description": "EBSCO Customer ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vendorid",
+            "in": "path",
+            "description": "Vendor ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kbartConfigurationId",
+            "in": "path",
+            "description": "KBART Configuration ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Unique code assigned by EBSCO to grant you access to this API.  The API key needs to be a header parameter for every operation in order to access this API. If you require an API key, please contact EBSCO customer support.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "JSON payload to update or create a KBART configuration.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorKbartConfigurationRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "204": {
+            "description": "The server has successfully fulfilled the PUT request.",
+            "content": {}
+          },
+          "default": {
+            "description": "Unexpected Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/{custid}/vendors/{vendorid}/packages": {
       "get": {
         "tags": [
@@ -1243,6 +1380,16 @@
             "required": true,
             "schema": {
               "type": "integer"
+            }
+          },
+          {
+            "name": "includekbartstatus",
+            "in": "query",
+            "description": "Include KBART status fields in the response",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
             }
           },
           {
@@ -6247,6 +6394,16 @@
             "type": "boolean",
             "description": "Field to indicate if a package is eligible for Smart Links Plus.",
             "example": true
+          },
+          "isKbartEligible": {
+            "type": "boolean",
+            "description": "Field to indicate if a package is eligible for KBART.",
+            "example": true
+          },
+          "isKbartEnabled": {
+            "type": "boolean",
+            "description": "Field to indicate if KBART is enabled for the package.",
+            "example": false
           }
         },
         "required": [
@@ -10414,7 +10571,79 @@
         "required": [
           "categoryName"
         ]
+      },
+      "VendorKbartConfigurationResponse": {
+        "title": "VendorKbartConfigurationResponse",
+        "type": "object",
+        "description": "Represents a KBART configuration for a vendor.",
+        "properties": {
+          "custNo": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Customer number"
+          },
+          "vendorId": {
+            "type": "integer",
+            "description": "Vendor ID"
+          },
+          "kbartConfigurationId": {
+            "type": "integer",
+            "description": "KBART Configuration ID"
+          },
+          "kbartAutomationEnabled": {
+            "type": "boolean",
+            "description": "Indicates if KBART automation is enabled"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Customer ID"
+          },
+          "secondaryCustomerId": {
+            "type": "string",
+            "description": "Secondary Customer ID"
+          },
+          "customerPasskey": {
+            "type": "string",
+            "description": "Customer passkey"
+          },
+          "customerNote": {
+            "type": "string",
+            "description": "Customer note"
+          },
+          "configurationName": {
+            "type": "string",
+            "description": "Configuration name"
+          }
+        }
+      },
+      "UpdateVendorKbartConfigurationRequest": {
+        "title": "UpdateVendorKbartConfigurationRequest",
+        "type": "object",
+        "description": "Request payload for updating or creating a vendor KBART configuration.",
+        "properties": {
+          "kbartAutomationEnabled": {
+            "type": "boolean",
+            "description": "Indicates if KBART automation is enabled"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Customer ID"
+          },
+          "secondaryCustomerId": {
+            "type": "string",
+            "description": "Secondary Customer ID"
+          },
+          "customerPasskey": {
+            "type": "string",
+            "description": "Customer passkey"
+          },
+          "customerNote": {
+            "type": "string",
+            "description": "Customer note"
+          }
+        }
       }
     }
   }
 }
+
